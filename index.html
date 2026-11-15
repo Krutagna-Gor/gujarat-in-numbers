@@ -9,7 +9,18 @@
 <body>
   <h1>Gujarat in Numbers</h1>
   <p>Source: NFHS-5 (2019-21, provisional). Survey estimates.</p>
+
+  <select id="indicator">
+    <option value="sex_ratio">Sex ratio</option>
+    <option value="female_school_pct">Female school (%)</option>
+    <option value="pop_below15_pct">Pop below 15 (%)</option>
+  </select>
+  <br>
+  <canvas id="myChart" width="800" height="900"></canvas>
+
   <table id="dataTable"></table>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
