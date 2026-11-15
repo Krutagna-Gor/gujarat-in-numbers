@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="gu">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,14 +8,19 @@
 </head>
 <body>
   <h1>Gujarat in Numbers</h1>
-  <p>Source: NFHS-5 (2019-21, provisional). Survey estimates.</p>
+  <p>Source: NFHS-5 (2019-21, provisional). These are survey estimates, not a full count.</p>
 
   <select id="indicator">
     <option value="sex_ratio">Sex ratio</option>
-    <option value="female_school_pct">Female school (%)</option>
-    <option value="pop_below15_pct">Pop below 15 (%)</option>
+    <option value="female_school_pct">Women who ever attended school (%)</option>
+    <option value="pop_below15_pct">Population below age 15 (%)</option>
   </select>
-  <br>
+
+  <div id="mapLegend"></div>
+  <div class="map-wrap">
+    <div id="tileMap"></div>
+  </div>
+
   <canvas id="myChart" width="800" height="900"></canvas>
 
   <table id="dataTable"></table>
