@@ -4,7 +4,7 @@ An interactive dashboard of district-wise health and education indicators for Gu
  
 **Live demo:** https://krutagna-gor.github.io/gujarat-in-numbers/
 
-![Gujarat in Numbers screenshot](assets/screenshot.png)
+![Gujarat in Numbers screenshot](assets/Screenshot.png)
 
 ## Features
 - **Tile-grid map:** one square per district, arranged roughly like Gujarat's geography and coloured by the selected indicator
