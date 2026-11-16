@@ -3,7 +3,9 @@
 An interactive dashboard of district-wise health and education indicators for Gujarat's 33 districts.
  
 **Live demo:** https://krutagna-gor.github.io/gujarat-in-numbers/
- 
+
+![Gujarat in Numbers screenshot](assets/screenshot.png)
+
 ## Features
 - **Tile-grid map:** one square per district, arranged roughly like Gujarat's geography and coloured by the selected indicator
 - **District details:** click a tile to see its values and rank among all districts
