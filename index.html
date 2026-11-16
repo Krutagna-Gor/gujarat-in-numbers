@@ -4,12 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gujarat in Numbers</title>
+  <meta name="description" content="District-wise health and education indicators of Gujarat from NFHS-5 (2019-21), shown as a tile map, chart and comparison tool.">
+  <meta property="og:title" content="Gujarat in Numbers">
+  <meta property="og:description" content="Explore Gujarat's 33 districts: sex ratio, women's schooling and young population (NFHS-5).">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Gujarat in Numbers</h1>
   <p>Source: NFHS-5 (2019-21, provisional). These are survey estimates, not a full count.</p>
 
+  <label for="indicator">Choose an indicator:</label><br>
   <select id="indicator">
     <option value="sex_ratio">Sex ratio</option>
     <option value="female_school_pct">Women who ever attended school (%)</option>
@@ -21,9 +25,34 @@
     <div id="tileMap"></div>
   </div>
 
-  <canvas id="myChart" width="800" height="900"></canvas>
+  <div id="details">Click a district tile to see its details.</div>
 
+  <h2>Compare two districts</h2>
+  <select id="districtA" aria-label="First district"></select>
+  <span>vs</span>
+  <select id="districtB" aria-label="Second district"></select>
+  <table id="compareTable"></table>
+  <p class="note">Survey estimates: small differences may not be meaningful.</p>
+
+  <h2>All districts ranked</h2>
+  <div class="chart-wrap">
+    <canvas id="myChart" width="800" height="900" aria-label="Bar chart of all Gujarat districts for the selected indicator"></canvas>
+  </div>
+
+  <h2>Data</h2>
   <table id="dataTable"></table>
+
+  <footer>
+    <p>
+      Data: <a href="https://www.data.gov.in/catalog/national-family-health-survey-5-nfhs-5-india-districts-factsheet-data-provisional" target="_blank" rel="noopener">NFHS-5 India Districts Factsheet (provisional), data.gov.in</a>.
+      Charts: Chart.js (MIT).
+    </p>
+    <p>
+      Tile positions are approximate and not to scale.
+      Built by Krutagna Gor.
+      <a href="https://github.com/Krutagna-Gor/gujarat-in-numbers" target="_blank" rel="noopener">Source code on GitHub</a>
+    </p>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="script.js"></script>

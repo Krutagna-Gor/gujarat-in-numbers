@@ -1,4 +1,9 @@
 let chart;
+let allRows = [];
+let currentKey = "sex_ratio";
+let selectedDistrict = null;
+
+const INDICATOR_KEYS = ["female_school_pct", "pop_below15_pct", "sex_ratio"];
 
 const INDICATOR_LABEL = {
   "sex_ratio": "Sex ratio",
@@ -40,26 +45,27 @@ async function loadData() {
   return rows;
 }
 
-function drawTable(rows) {
+function drawTable() {
   const table = document.getElementById("dataTable");
   let html = "<tr><th>District</th><th>" + INDICATOR_LABEL.female_school_pct +
              "</th><th>" + INDICATOR_LABEL.pop_below15_pct +
              "</th><th>" + INDICATOR_LABEL.sex_ratio + "</th></tr>";
-  for (const r of rows) {
+  for (const r of allRows) {
     html += "<tr><td>" + r.district + "</td><td>" + r.female_school_pct +
             "</td><td>" + r.pop_below15_pct + "</td><td>" + r.sex_ratio + "</td></tr>";
   }
   table.innerHTML = html;
 }
 
-function drawMap(rows, key) {
+function drawMap() {
+  const key = currentKey;
   const map = document.getElementById("tileMap");
-  const values = rows.map(r => Number(r[key]));
+  const values = allRows.map(r => Number(r[key]));
   const min = Math.min(...values);
   const max = Math.max(...values);
   map.innerHTML = "";
 
-  for (const r of rows) {
+  for (const r of allRows) {
     const pos = TILE_POS[r.district];
     if (!pos) {
       console.log("Not in grid:", r.district);
@@ -70,12 +76,14 @@ function drawMap(rows, key) {
 
     const tile = document.createElement("div");
     tile.className = "tile";
+    if (r.district === selectedDistrict) tile.classList.add("selected");
     tile.style.gridRow = pos[0] + 1;
     tile.style.gridColumn = pos[1] + 1;
     tile.style.background = "hsl(210, 80%, " + (90 - t * 55) + "%)";
     tile.style.color = t > 0.5 ? "#fff" : "#000";
     tile.title = r.district + ": " + v;
     tile.innerHTML = "<b>" + r.district + "</b><br>" + v;
+    tile.addEventListener("click", () => showDetails(r.district));
     map.appendChild(tile);
   }
 
@@ -83,8 +91,58 @@ function drawMap(rows, key) {
     "Low: " + min + "  →  High: " + max;
 }
 
-function drawChart(rows, key) {
-  const sorted = [...rows].sort((a, b) => Number(b[key]) - Number(a[key]));
+function showDetails(name) {
+  selectedDistrict = name;
+  const row = allRows.find(r => r.district === name);
+
+  let html = "<h3>" + name + "</h3>";
+  html += "<table><tr><th>Indicator</th><th>Value</th><th>Rank (1 = highest)</th></tr>";
+  for (const key of INDICATOR_KEYS) {
+    const sorted = [...allRows].sort((a, b) => Number(b[key]) - Number(a[key]));
+    const rank = sorted.findIndex(r => r.district === name) + 1;
+    html += "<tr><td>" + INDICATOR_LABEL[key] + "</td><td>" + row[key] +
+            "</td><td>" + rank + " of " + allRows.length + "</td></tr>";
+  }
+  html += "</table>";
+  document.getElementById("details").innerHTML = html;
+
+  drawMap(); // redraw so the selected tile gets a red border
+}
+
+function fillCompareSelects() {
+  const names = allRows.map(r => r.district).sort();
+  const a = document.getElementById("districtA");
+  const b = document.getElementById("districtB");
+  for (const n of names) {
+    a.add(new Option(n, n));
+    b.add(new Option(n, n));
+  }
+  a.value = names[0];
+  b.value = names[1];
+  a.addEventListener("change", drawCompare);
+  b.addEventListener("change", drawCompare);
+}
+
+function drawCompare() {
+  const nameA = document.getElementById("districtA").value;
+  const nameB = document.getElementById("districtB").value;
+  const A = allRows.find(r => r.district === nameA);
+  const B = allRows.find(r => r.district === nameB);
+
+  let html = "<tr><th>Indicator</th><th>" + nameA + "</th><th>" + nameB +
+             "</th><th>Difference (first − second)</th></tr>";
+  for (const key of INDICATOR_KEYS) {
+    const diff = Number(A[key]) - Number(B[key]);
+    const sign = diff > 0 ? "+" : "";
+    html += "<tr><td>" + INDICATOR_LABEL[key] + "</td><td>" + A[key] +
+            "</td><td>" + B[key] + "</td><td>" + sign + diff.toFixed(1) + "</td></tr>";
+  }
+  document.getElementById("compareTable").innerHTML = html;
+}
+
+function drawChart() {
+  const key = currentKey;
+  const sorted = [...allRows].sort((a, b) => Number(b[key]) - Number(a[key]));
   const labels = sorted.map(r => r.district);
   const values = sorted.map(r => Number(r[key]));
 
@@ -100,11 +158,16 @@ function drawChart(rows, key) {
 }
 
 loadData().then(rows => {
-  drawTable(rows);
-  drawMap(rows, "sex_ratio");
-  drawChart(rows, "sex_ratio");
+  allRows = rows;
+  drawTable();
+  drawMap();
+  drawChart();
+  fillCompareSelects();
+  drawCompare();
+
   document.getElementById("indicator").addEventListener("change", e => {
-    drawMap(rows, e.target.value);
-    drawChart(rows, e.target.value);
+    currentKey = e.target.value;
+    drawMap();
+    drawChart();
   });
 });
